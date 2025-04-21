@@ -117,8 +117,6 @@ const getAllNotes = async (req, res) => {
   }
 };
 
-
-
 // Update Note
 // ENDPOINT: /api/notes/update-note/:id
 // METHOD : PATCH
