@@ -12,6 +12,8 @@ const NotesSchema = new Schema({
   desc: {
     type: String,
   }
+}, {
+  timestamps: true,
 });
 const NotesModel = mongoose.model("notes", NotesSchema);
 export default NotesModel;

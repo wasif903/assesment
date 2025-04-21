@@ -5,7 +5,8 @@ import {
   createNote,
   getNotes,
   updateNote,
-  deleteNote
+  deleteNote,
+  getAllNotes
 } from "../controllers/NotesController.js";
 import validate from "../middlewares/ValidationHandler.js";
 
@@ -15,7 +16,8 @@ router.use(AuthMiddleware);
 
 router.post("/create-note", validate(createNotes), createNote);
 router.get("/my-notes", getNotes);
-router.put("/:id", validate(createNotes), updateNote);
-router.delete("/:id", deleteNote);
+router.get("/all-notes", getAllNotes);
+router.patch("/update-note/:id", validate(createNotes), updateNote);
+router.delete("/delete-note/:id", deleteNote);
 
 export default router;
