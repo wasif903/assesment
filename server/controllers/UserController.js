@@ -13,7 +13,6 @@ const register = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
 
-    // Check if user already exists
     const existingUser = await UserModel.findOne({
       $or: [{ username }, { email }]
     });
@@ -23,7 +22,6 @@ const register = async (req, res, next) => {
         .json({ message: "Username or email already taken" });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new UserModel({
@@ -32,22 +30,26 @@ const register = async (req, res, next) => {
       password: hashedPassword
     });
 
-    // Save user first
     await newUser.save();
 
-    // Generate tokens
     const accessToken = generateAccessToken(newUser);
     const refreshToken = generateRefreshToken(newUser);
 
-    // Save refresh token to user document
     newUser.refreshToken = refreshToken;
     await newUser.save();
+
+    const userDetails = {
+      username: newUser.username,
+      email: newUser.email,
+      _id: newUser._id
+    };
 
     // Return tokens
     res.status(201).json({
       message: "User registered successfully",
       accessToken,
-      refreshToken
+      refreshToken,
+      user: userDetails
     });
   } catch (err) {
     next(err);
@@ -74,15 +76,19 @@ const login = async (req, res, next) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Generate tokens
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    // Save refresh token in user document
     user.refreshToken = refreshToken;
     await user.save();
 
-    res.status(200).json({ accessToken, refreshToken });
+    const userDetails = {
+      username: user.username,
+      email: user.email,
+      _id: user._id
+    };
+
+    res.status(200).json({ accessToken, refreshToken, user: userDetails });
   } catch (err) {
     next(err);
   }

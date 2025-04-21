@@ -87,7 +87,7 @@ const getAllNotes = async (req, res) => {
             {
               $project: {
                 title: 1,
-                content: 1,
+                desc: 1,
                 createdAt: 1,
                 createdBy: {
                   _id: '$createdBy._id',
